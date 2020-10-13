@@ -1,0 +1,2 @@
+require: ['ignore-styles', '@babel/register']
+reporter: 'progress'
