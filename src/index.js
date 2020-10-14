@@ -1,14 +1,29 @@
-import _ from 'lodash';
-import './index.css';
+import { getUsers, deleteUser } from "./api/userApi";
 
-function component() {
-  const element = document.createElement('div');
+getUsers().then(result => {
+  let usersBody = ""
 
-  // Lodash, currently included via a script, is required for this line to work
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-  element.classList.add('hello');
+  result.forEach(user => {
+    usersBody += `<tr>
+    <td><a href="#" data-id="${user.id}" class="deleteUser">Delete</a></td>
+    <td>${user.id}</td>
+    <td>${user.firstName}</td>
+    <td>${user.lastName}</td>
+    <td>${user.email}</td>
+    </tr>`
+  });
 
-  return element;
-}
+  global.document.getElementById('users').innerHTML = usersBody
 
-document.body.appendChild(component());
+  const deleteLinks = global.document.getElementsByClassName('deleteUser');
+
+  Array.from(deleteLinks, link => {
+    link.onclick = event => {
+      const element = event.target
+      event.preventDefault()
+      deleteUser(element.attributes["data-id"].value);
+      const row = element.parentNode.parentNode
+      row.parentNode.removeChild(row)
+    }
+  })
+})
